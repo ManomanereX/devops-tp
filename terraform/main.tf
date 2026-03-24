@@ -7,6 +7,11 @@ terraform {
       version = "~> 5.0"
     }
   }
+
+  backend "gcs" {
+    bucket = "project-6af83e74-3435-41ca-a52-tf-state"
+    prefix = "helloworld/state"
+  }
 }
 
 provider "google" {

@@ -5,6 +5,12 @@ import traceback
 from datetime import datetime
 from flask import Flask, jsonify
 
+try:
+    from version import __version__
+    VERSION = __version__
+except ImportError:
+    VERSION = os.environ.get("APP_VERSION", "unknown")
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
@@ -12,7 +18,6 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
-VERSION = os.environ.get("APP_VERSION", "1.0.0")
 
 @app.route("/")
 def hello():
@@ -26,6 +31,13 @@ def hello():
 @app.route("/health")
 def health():
     return jsonify({"status": "ok", "version": VERSION})
+
+@app.route("/version")
+def version():
+    return jsonify({
+        "version": VERSION,
+        "environment": os.environ.get("ENV", "production"),
+    })
 
 @app.route("/compute")
 def compute():
